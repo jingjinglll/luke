@@ -258,6 +258,7 @@ public final class OpenIndexDialogFactory implements DialogOpener.DialogFactory 
 
     List<String> clazzNames = new ArrayList<>();
     clazzNames.add(FSDirectory.class.getName());
+    clazzNames.add(PravegaDirectry.class.getName());
     clazzNames.addAll(clazzSet.stream().map(Class::getName).collect(Collectors.toList()));
 
     String[] result = new String[clazzNames.size()];
