@@ -1,8 +1,7 @@
 package org.apache.lucene.luke.psearch;
 
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.util.internal.ConcurrentSet;
 import io.pravega.client.ClientConfig;
 import io.pravega.client.ClientFactory;
@@ -18,6 +17,8 @@ import io.pravega.client.stream.ScalingPolicy;
 import io.pravega.client.stream.Serializer;
 import io.pravega.client.stream.StreamConfiguration;
 import io.pravega.client.stream.impl.JavaSerializer;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +56,9 @@ public class LuceneFileStore {
     private final ReentrantReadWriteLock isClose = new ReentrantReadWriteLock();
     private final Lock notClose = isClose.readLock();
     private final Lock close = isClose.writeLock();
-    private final ThreadPoolService threadPoolService =
-            ResourceManager.ThreadPool.getThreadPoolService(ThreadPoolType.SHARD_STREAM_SEAL_AND_DELETE);
+    private final ThreadPoolExecutor threadPoolService =new ThreadPoolExecutor(1, 256, 10, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<Runnable>(100),
+            new ThreadFactoryBuilder().setNameFormat("test").build());
     private Set<String> streamSet = new ConcurrentSet<>();
     private Cache<String, ByteStreamWriter> writerCache;
     private Cache<String, ByteStreamReader> readerCache;

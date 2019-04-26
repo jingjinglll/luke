@@ -17,9 +17,7 @@
  */
 package org.apache.lucene.luke.psearch;
 
-import com.dell.pravegasearch.common.metrics.MetricsTimer;
-import com.dell.pravegasearch.common.synchronizer.PravegaStoreFactory.StoreType;
-import com.dell.pravegasearch.common.synchronizer.structure.PravegaSharedObjectSet;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,11 +40,11 @@ public class PravegaObjectSynchronizer extends PravegaSynchronizer
     }
 
     public PravegaObjectSynchronizer(String scopeName, String streamName, String rootPath) {
-        this(scopeName, streamName, rootPath, StoreType.OBJECT, false);
+        this(scopeName, streamName, rootPath, PravegaStoreFactory.StoreType.OBJECT, false);
         this.rootPath = rootPath;
     }
 
-    public PravegaObjectSynchronizer(String scopeName, String streamName, String rootPath, StoreType type, boolean sorted ) {
+    public PravegaObjectSynchronizer(String scopeName, String streamName, String rootPath, PravegaStoreFactory.StoreType type, boolean sorted ) {
         super(scopeName, streamName, type, sorted);
         this.pravegaStore = getStore();
         this.rootPath = rootPath;
@@ -58,9 +56,9 @@ public class PravegaObjectSynchronizer extends PravegaSynchronizer
         try {
             pravegaStore.refresh();
             if (pravegaStore.containsKey(path)) {
-                MetricsTimer startTime = metrics.startTime();
+
                 byte[] value = pravegaStore.get(path);
-                metrics.reportGetValue(startTime);
+
                 return value;
             }
         } catch (Exception e) {
@@ -74,9 +72,9 @@ public class PravegaObjectSynchronizer extends PravegaSynchronizer
     public void setValueAsBytes(String key, byte[] value) {
         String path = rootPath + "/" + key;
         try {
-            MetricsTimer startTime = metrics.startTime();
+
             pravegaStore.put(path, value);
-            metrics.reportSetValue(startTime);
+
         } catch (Exception e) {
             log.error("Failed to set {} into State Synchronizer", key, e);
             throw e;

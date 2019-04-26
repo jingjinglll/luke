@@ -18,7 +18,6 @@
 
 package org.apache.lucene.luke.psearch;
 
-import com.dell.pravegasearch.common.exception.PravegaSearchRuntimeException;
 import io.pravega.client.ClientConfig;
 import io.pravega.client.ClientFactory;
 import io.pravega.client.stream.impl.DefaultCredentials;
@@ -42,7 +41,7 @@ public class PravegaConfigHelper {
         try {
             controllerUri = new URI(getControllerEndPoint());
         } catch (Exception e) {
-            throw new PravegaSearchRuntimeException("Fail to get URI for Pravega controller.", e);
+            throw new RuntimeException("Fail to get URI for Pravega controller.", e);
         }
 
         CLIENT_CONFIG = ClientConfig.builder()
