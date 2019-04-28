@@ -15,19 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.dell.pravegasearch;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.dell.pravegasearch.config;
 
 public class ConfigFactory {
-    private static final Logger log = LoggerFactory.getLogger(ConfigFactory.class);
-
-
     private static PravegaConfig pravegaConfig;
-
-
 
     public static void initConfig(PravegaConfig config) {
         pravegaConfig = config;

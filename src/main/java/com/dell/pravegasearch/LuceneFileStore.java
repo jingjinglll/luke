@@ -2,6 +2,7 @@ package com.dell.pravegasearch;
 
 import com.dell.pravegasearch.common.synchronizer.ObjectSetSynchronizer;
 import com.dell.pravegasearch.common.synchronizer.structure.PravegaObjectSynchronizer;
+import com.dell.pravegasearch.config.PravegaConfigHelper;
 import com.dell.pravegasearch.shardworker.engine.directory.pravega.CommitPoint;
 import com.dell.pravegasearch.shardworker.engine.directory.pravega.EventData;
 import com.google.common.cache.Cache;

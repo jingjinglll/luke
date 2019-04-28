@@ -1,0 +1,8 @@
+pravega:
+  pravegaControllerAddress: 127.0.0.1 #10.247.101.104 #127.0.0.1
+  pravegaControllerPort: 9090
+  pravegaUserName: admin
+  pravegaPassword: password
+  pravegaCertFilePem: pravegadummycerts/pravegacert.pem
+  pravegaKeyFilePem: pravegadummycerts/pravegakey.pem
+  pravegaPasswdFilePem: pravegadummycerts/pravegapasswd

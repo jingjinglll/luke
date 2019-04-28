@@ -20,7 +20,7 @@ package com.dell.pravegasearch.common.synchronizer;
 import com.google.common.base.Preconditions;
 import io.pravega.client.ClientFactory;
 import io.pravega.client.admin.StreamManager;
-import com.dell.pravegasearch.PravegaConfigHelper;
+import com.dell.pravegasearch.config.PravegaConfigHelper;
 import com.dell.pravegasearch.PravegaSharedStore;
 import com.dell.pravegasearch.PravegaStoreFactory;
 import org.slf4j.Logger;
