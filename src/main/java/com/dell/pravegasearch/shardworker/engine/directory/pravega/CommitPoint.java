@@ -1,4 +1,4 @@
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch.shardworker.engine.directory.pravega;
 
 import java.io.Serializable;
 import java.util.Map;

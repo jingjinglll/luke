@@ -15,27 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch.common.synchronizer;
 
-import java.io.Serializable;
+/**
+ * The basic interface exposed an encapsulation of Pravega native synchronizer.
+ */
+public interface Synchronizer {
 
-public class EventData implements Serializable {
+    /**
+     * Update local cache with latest value.
+     * */
+    void refresh();
 
-    private final String eventName;
-    private final long offset;
-    private final int length;
+    /**
+     * Cleanup local cache as if it starts from an initial empty state.
+     * */
+    void cleanup();
 
-    public EventData(String eventName, long offset, int length) {
-        this.eventName = eventName;
-        this.offset = offset;
-        this.length = length;
-    }
-
-    public long getOffset() {
-        return this.offset;
-    }
-
-    public int getLength() {
-        return this.length;
-    }
+    /**
+     * Close the synchronizer and release resources.
+     * */
+    void close();
 }

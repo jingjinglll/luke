@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch.common.synchronizer;
 
+import com.dell.pravegasearch.common.synchronizer.Synchronizer;
 import java.util.List;
 
 public interface ObjectSetSynchronizer extends Synchronizer {

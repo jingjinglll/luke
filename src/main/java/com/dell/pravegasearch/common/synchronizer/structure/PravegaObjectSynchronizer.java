@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch.common.synchronizer.structure;
 
 
 import java.io.ByteArrayInputStream;
@@ -23,8 +23,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import com.dell.pravegasearch.common.synchronizer.ObjectSetSynchronizer;
+import com.dell.pravegasearch.PravegaStoreFactory;
+import com.dell.pravegasearch.common.synchronizer.PravegaSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +87,7 @@ public class PravegaObjectSynchronizer extends PravegaSynchronizer
 
     @Override
     public void setValueAsString(String key, String value) {
-        byte[] bytes = value.getBytes();
+        byte[] bytes = value.getBytes(Charset.defaultCharset());
         setValueAsBytes(key, bytes);
     }
 
@@ -93,7 +97,7 @@ public class PravegaObjectSynchronizer extends PravegaSynchronizer
         if (bytes == null) {
             return null;
         }
-        return new String(bytes);
+        return new String(bytes, Charset.defaultCharset());
     }
 
     @Override

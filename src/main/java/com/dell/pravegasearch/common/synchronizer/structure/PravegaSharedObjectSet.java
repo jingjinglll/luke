@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch.common.synchronizer.structure;
 
 import io.pravega.client.ClientFactory;
 import io.pravega.client.admin.StreamManager;
@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicReference;
+import com.dell.pravegasearch.PravegaSharedStore;
+import com.dell.pravegasearch.SharedStateMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

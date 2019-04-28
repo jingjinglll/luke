@@ -15,26 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch;
 
+public interface PravegaConfig {
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+    String pravegaControllerPort();
 
-public class ConfigFactory {
-    private static final Logger log = LoggerFactory.getLogger(ConfigFactory.class);
+    String pravegaControllerAddress();
 
+    String pravegaUserName();
 
-    private static PravegaConfig pravegaConfig;
+    String pravegaPassword();
 
+    String pravegaCertFilePem();
 
+    String pravegaKeyFilePem();
 
-    public static void initConfig(PravegaConfig config) {
-        pravegaConfig = config;
-    }
-
-    public static PravegaConfig getPravegaConfig() {
-        return pravegaConfig;
-    }
-
+    String pravegaPasswdFilePem();
 }

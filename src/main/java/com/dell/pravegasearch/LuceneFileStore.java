@@ -1,6 +1,12 @@
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch;
 
+import com.dell.pravegasearch.common.synchronizer.ObjectSetSynchronizer;
+import com.dell.pravegasearch.common.synchronizer.structure.PravegaObjectSynchronizer;
+import com.dell.pravegasearch.shardworker.engine.directory.pravega.CommitPoint;
+import com.dell.pravegasearch.shardworker.engine.directory.pravega.EventData;
 import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.util.internal.ConcurrentSet;
 import io.pravega.client.ClientConfig;
@@ -70,7 +76,7 @@ public class LuceneFileStore {
     }
 
     private void init(String shardId) {
-        rootPath = "dataCommitPoint_    "+ shardId;
+        rootPath = "dataCommitPoint_"+ shardId;
         String SCOPE = "dataCommitPointScope";
         String STREAM = "dataCommitPointStream";
         synchronizer = new PravegaObjectSynchronizer(
@@ -93,6 +99,26 @@ public class LuceneFileStore {
             commitPoint = commitPointTmp;
             eventsMap = commitPointTmp.getEventDataMap();
         }
+        writerCache = CacheBuilder.newBuilder()
+                                  .maximumSize(50)
+                                  .expireAfterAccess(10, TimeUnit.MINUTES)
+                                  .removalListener((RemovalListener<String, ByteStreamWriter>) notification -> {
+                                      log.info("Closing the ByteStreamWriter for stream {}", notification.getKey());
+                                      ByteStreamWriter writer = notification.getValue();
+                                      try {
+                                          writer.close();
+                                      } catch (IOException e) {
+                                          log.error("Failed to close ByteStreamWriter for stream {}", notification.getKey(), e);
+                                      }
+                                  }).build();
+        readerCache = CacheBuilder.newBuilder()
+                                  .maximumSize(50)
+                                  .expireAfterAccess(10, TimeUnit.MINUTES)
+                                  .removalListener((RemovalListener<String, ByteStreamReader>) notification -> {
+                                      log.info("Closing the ByteStreamWriter for stream {}", notification.getKey());
+                                      ByteStreamReader reader = notification.getValue();
+                                      reader.close();
+                                  }).build();
 
     }
 

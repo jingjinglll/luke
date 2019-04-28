@@ -16,17 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch;
 
 import io.pravega.client.ClientConfig;
 import io.pravega.client.ClientFactory;
 import io.pravega.client.stream.impl.DefaultCredentials;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +37,15 @@ public class PravegaConfigHelper {
     static {
         URI controllerUri;
         try {
-            controllerUri = new URI(getControllerEndPoint());
+            controllerUri = new URI("tcp://127.0.0.1:9090");
         } catch (Exception e) {
             throw new RuntimeException("Fail to get URI for Pravega controller.", e);
         }
 
         CLIENT_CONFIG = ClientConfig.builder()
                                     .controllerURI(controllerUri)
-                                    .credentials(new DefaultCredentials(getPassword(), getUserName()))
-                                    .trustStore(getCertFilePem())
+                                    .credentials(new DefaultCredentials("password", "admin"))
+                                    .trustStore("pravegadummycerts/pravegacert.pem")
                                     .validateHostName(false)
                                     .build();
     }
@@ -64,41 +62,4 @@ public class PravegaConfigHelper {
         return CLIENT_CONFIG;
     }
 
-    public static String getPassword() {
-        return ConfigFactory.getPravegaConfig().pravegaPassword();
-    }
-
-    public static String getUserName() {
-        return ConfigFactory.getPravegaConfig().pravegaUserName();
-    }
-
-    public static String getCertFilePem() {
-        return fileToString(ConfigFactory.getPravegaConfig().pravegaCertFilePem());
-    }
-
-    public static String getKeyFilePem() {
-        return fileToString(ConfigFactory.getPravegaConfig().pravegaKeyFilePem());
-    }
-
-    public static String getPasswdFilePem() {
-        return fileToString(ConfigFactory.getPravegaConfig().pravegaPasswdFilePem());
-    }
-
-    public static String getControllerEndPoint() {
-       String pravegaControllerAddress = ConfigFactory.getPravegaConfig().pravegaControllerAddress();
-       String pravegaControllerPort = ConfigFactory.getPravegaConfig().pravegaControllerPort();
-
-       return "tcp://" + pravegaControllerAddress + ":" + pravegaControllerPort;
-    }
-
-    private static String fileToString(String fileName) {
-        String result = "";
-        InputStream fileStream = PravegaConfigHelper.class.getClassLoader().getResourceAsStream(fileName);
-        try {
-            result = IOUtils.toString(fileStream, "utf-8");
-        } catch (IOException e) {
-            log.error("IOEexception {}", e);
-        }
-        return result;
-    }
 }

@@ -1,4 +1,4 @@
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch;
 
 
 import org.apache.lucene.store.IndexInput;

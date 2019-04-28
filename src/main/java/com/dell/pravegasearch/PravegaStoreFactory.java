@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch;
 
+import com.dell.pravegasearch.common.synchronizer.structure.PravegaSharedObjectSet;
 import io.pravega.client.ClientFactory;
 import io.pravega.client.admin.StreamManager;
 import org.slf4j.Logger;

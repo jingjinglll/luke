@@ -1,4 +1,4 @@
-package org.apache.lucene.luke.psearch;
+package com.dell.pravegasearch;
 
 import java.io.IOException;
 import java.util.HashMap;

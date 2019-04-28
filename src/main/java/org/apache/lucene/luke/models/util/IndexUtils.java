@@ -34,11 +34,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -73,20 +69,28 @@ public final class IndexUtils {
     final Path root = FileSystems.getDefault().getPath(Objects.requireNonNull(indexPath));
     final List<DirectoryReader> readers = new ArrayList<>();
 
-    // find all valid index directories in this directory
-    Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-      @Override
-      public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attrs) throws IOException {
-        Directory dir = openDirectory(path, dirImpl);
-        try {
-          DirectoryReader dr = DirectoryReader.open(dir);
-          readers.add(dr);
-        } catch (IOException e) {
-          log.warn(e.getMessage(), e);
-        }
-        return FileVisitResult.CONTINUE;
-      }
-    });
+//    // find all valid index directories in this directory
+//    Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+//      @Override
+//      public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attrs) throws IOException {
+//        Directory dir = openDirectory(path, dirImpl);
+//        try {
+//          DirectoryReader dr = DirectoryReader.open(dir);
+//          readers.add(dr);
+//        } catch (IOException e) {
+//          log.warn(e.getMessage(), e);
+//        }
+//        return FileVisitResult.CONTINUE;
+//      }
+//    });
+
+    Directory dir = openDirectory(indexPath, dirImpl);
+    try {
+      DirectoryReader dr = DirectoryReader.open(dir);
+      readers.add(dr);
+    } catch (IOException e) {
+      log.warn(e.getMessage(), e);
+    }
 
     if (readers.isEmpty()) {
       throw new RuntimeException("No valid directory at the location: " + indexPath);
@@ -119,9 +123,9 @@ public final class IndexUtils {
   }
 
   private static Directory openDirectory(Path path, String dirImpl) throws IOException {
-    if (!Files.exists(Objects.requireNonNull(path))) {
-      throw new IllegalArgumentException("Index directory doesn't exist.");
-    }
+//    if (!Files.exists(Objects.requireNonNull(path))) {
+//      throw new IllegalArgumentException("Index directory doesn't exist.");
+//    }
 
     Directory dir;
     if (dirImpl == null || dirImpl.equalsIgnoreCase("org.apache.lucene.store.FSDirectory")) {
@@ -129,12 +133,23 @@ public final class IndexUtils {
     } else {
       try {
         Class<?> implClazz = Class.forName(dirImpl);
-        Constructor<?> constr = implClazz.getConstructor(Path.class);
-        if (constr != null) {
-          dir = (Directory) constr.newInstance(path);
+        if(dirImpl.endsWith("PravegaDirectory")) {
+          Constructor<?> constr = implClazz.getConstructor(String.class);
+          if (constr != null) {
+            dir = (Directory) constr.newInstance(path.toString());
+          } else {
+            constr = implClazz.getConstructor(String.class, LockFactory.class, double.class);
+            dir = (Directory) constr.newInstance(path.toString(), null, 100);
+          }
         } else {
-          constr = implClazz.getConstructor(Path.class, LockFactory.class);
-          dir = (Directory) constr.newInstance(path, null);
+          Constructor<?> constr = implClazz.getConstructor(Path.class);
+
+          if (constr != null) {
+            dir = (Directory) constr.newInstance(path);
+          } else {
+            constr = implClazz.getConstructor(Path.class, LockFactory.class);
+            dir = (Directory) constr.newInstance(path, null);
+          }
         }
       } catch (Exception e) {
         log.warn(e.getMessage(), e);

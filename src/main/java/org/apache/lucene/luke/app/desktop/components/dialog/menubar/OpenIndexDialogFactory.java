@@ -30,6 +30,7 @@ import org.apache.lucene.luke.models.util.reflection.ClassScanner;
 import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.dell.pravegasearch.PravegaDirectory;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -111,6 +112,7 @@ public final class OpenIndexDialogFactory implements DialogOpener.DialogFactory 
 
   private void initialize() {
     idxPathCombo.setPreferredSize(new Dimension(360, 40));
+    idxPathCombo.setEditable(true);
 
     browseBtn.setText(FontUtils.elegantIconHtml("&#x6e;", MessageUtils.getLocalizedMessage("button.browse")));
     browseBtn.setFont(StyleConstants.FONT_BUTTON_LARGE);
@@ -258,7 +260,7 @@ public final class OpenIndexDialogFactory implements DialogOpener.DialogFactory 
 
     List<String> clazzNames = new ArrayList<>();
     clazzNames.add(FSDirectory.class.getName());
-    clazzNames.add(PravegaDirectry.class.getName());
+    clazzNames.add(PravegaDirectory.class.getName());
     clazzNames.addAll(clazzSet.stream().map(Class::getName).collect(Collectors.toList()));
 
     String[] result = new String[clazzNames.size()];
