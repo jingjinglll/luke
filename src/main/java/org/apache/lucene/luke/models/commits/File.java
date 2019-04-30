@@ -19,7 +19,6 @@ package org.apache.lucene.luke.models.commits;
 
 import java.io.IOException;
 import org.apache.lucene.luke.app.DirectoryHandler;
-import org.apache.lucene.store.Directory;
 
 /**
  * Holder for a index file.
@@ -36,7 +35,7 @@ public final class File {
       try {
         file.displaySize = CommitsImpl.toDisplaySize(DirectoryHandler.getInstance().getState().getDirectory().fileLength(name));
       } catch (IOException e) {
-        e.printStackTrace();
+        file.displaySize = CommitsImpl.toDisplaySize(0);
       }
     } else {
       file.displaySize = CommitsImpl.toDisplaySize(fileObject.length());
