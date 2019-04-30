@@ -17,6 +17,10 @@
 
 package org.apache.lucene.luke.models.commits;
 
+import java.io.IOException;
+import org.apache.lucene.luke.app.DirectoryHandler;
+import org.apache.lucene.store.Directory;
+
 /**
  * Holder for a index file.
  */
@@ -28,7 +32,15 @@ public final class File {
     File file = new File();
     file.fileName = name;
     java.io.File fileObject = new java.io.File(indexPath, name);
-    file.displaySize = CommitsImpl.toDisplaySize(fileObject.length());
+    if(DirectoryHandler.getInstance().getState().getDirImpl().endsWith("PravegaDirectory")) {
+      try {
+        file.displaySize = CommitsImpl.toDisplaySize(DirectoryHandler.getInstance().getState().getDirectory().fileLength(name));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    } else {
+      file.displaySize = CommitsImpl.toDisplaySize(fileObject.length());
+    }
     return file;
   }
 

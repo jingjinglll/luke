@@ -33,18 +33,7 @@ public class PravegaSynchronizer implements Synchronizer {
 
     public PravegaSynchronizer(String scopeName, String streamName, PravegaStoreFactory.StoreType storeType, boolean sorted ) {
         Preconditions.checkArgument(!scopeName.contains("/"), "Root path cannot contain slash");
-//        ClientConfig clientConfig = null;
-//        try {
-//            clientConfig = ClientConfig.builder()
-//                                                    .controllerURI(new URI("tcp://localhost:9090"))
-//                                                    .credentials(new DefaultCredentials("password", "admin"))
-//                                                    .trustStore("pravegadummycerts/pravegacert.pem")
-//                                                    .validateHostName(false)
-//                                                    .build();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        ClientFactory clientFactory = PravegaConfigHelper.getClientFactory(scopeName); //ClientFactory.withScope(scopeName, clientConfig);
+        ClientFactory clientFactory = PravegaConfigHelper.getClientFactory(scopeName);
         StreamManager streamManager = StreamManager.create(PravegaConfigHelper.getClientConfig());
         sharedStore = PravegaStoreFactory.createSharedStore(clientFactory, streamManager, scopeName, streamName, sorted, storeType);
     }

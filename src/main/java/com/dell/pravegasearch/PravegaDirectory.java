@@ -59,11 +59,12 @@ public class PravegaDirectory extends BaseDirectory {
 
     @Override
     public long fileLength(String name) throws IOException {
-//        if (cache.keyExists(name)) {
-//            byte[] data = cache.get(name);
-//            return data.length;
-//        }
-        return client.fileLength(name);
+        if(name.startsWith("_")) {
+            return client.read(name).length;
+        } else {
+            return 0;
+        }
+
     }
 
     @Override
