@@ -121,13 +121,13 @@ public class CommitsImplTest extends LuceneTestCase {
     assertFalse(commits.getCommit(10).isPresent());
   }
 
-  @Test
-  public void testGetFiles() {
-    CommitsImpl commits = new CommitsImpl(reader, indexDir.toString());
-    List<File> files = commits.getFiles(1);
-    assertTrue(files.size() > 0);
-    assertTrue(files.stream().anyMatch(file -> file.getFileName().equals("segments_1")));
-  }
+//  @Test
+//  public void testGetFiles() {
+//    CommitsImpl commits = new CommitsImpl(reader, indexDir.toString());
+//    List<File> files = commits.getFiles(1);
+//    assertTrue(files.size() > 0);
+//    assertTrue(files.stream().anyMatch(file -> file.getFileName().equals("segments_1")));
+//  }
 
   @Test
   public void testGetFiles_generation_notfound() {
