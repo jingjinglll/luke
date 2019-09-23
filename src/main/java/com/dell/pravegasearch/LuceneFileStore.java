@@ -24,6 +24,8 @@ import io.pravega.client.stream.ScalingPolicy;
 import io.pravega.client.stream.Serializer;
 import io.pravega.client.stream.StreamConfiguration;
 import io.pravega.client.stream.impl.JavaSerializer;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import org.slf4j.Logger;
@@ -99,6 +101,7 @@ public class LuceneFileStore {
         if (commitPointTmp != null) {
             commitPoint = commitPointTmp;
             eventsMap = commitPointTmp.getEventDataMap();
+            log.warn("Loaded eventsMap for shard {}, segment {}: " + printEventsMap(eventsMap), shardId, commitPointTmp.getName());
         }
         writerCache = CacheBuilder.newBuilder()
                                   .maximumSize(50)
@@ -121,6 +124,15 @@ public class LuceneFileStore {
                                       reader.close();
                                   }).build();
 
+    }
+
+    private String printEventsMap(Map<String, EventData> eventsMap) {
+        String ret = "";
+        for(Map.Entry<String, EventData> entry : eventsMap.entrySet()) {
+            ret = ret + "file: " + entry.getKey() + "," + entry.getValue().getOffset() + "," +entry.getValue().getLength() + ";\n";
+        }
+
+        return ret;
     }
 
     public void write(String key, byte[] value) throws IOException {
@@ -170,13 +182,31 @@ public class LuceneFileStore {
             int length = eventData.getLength();
             reader.seekToOffset(offset);
             byte[] res = new byte[length];
-            reader.read(res);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(res);
+            int readLength = reader.read(byteBuffer);
+            while(readLength < length) {
+                readLength += reader.read(byteBuffer);
+            }
+
+            int footerFrom = res.length - 16;
+            byte[] footer = Arrays.copyOfRange(res, footerFrom, res.length);
+            ByteBuffer wrapped = ByteBuffer.wrap(footer);
+            int foot = wrapped.getInt();
 
             return res;
         } finally {
             notClose.unlock();
         }
     }
+
+//    private synchronized byte[] readsync(ByteStreamReader reader, String  key, long offset, int length) throws IOException {
+//        byte[] res = new byte[length];
+//        reader.seekToOffset(offset);
+//        System.out.println("offsite before " + key + " " + reader.getOffset());
+//        reader.read(res);
+//        System.out.println("offsite after " + key + " " + reader.getOffset() + " length " + length);
+//        return res;
+//    }
 
     public int fileLength(String key) {
         return eventsMap.getOrDefault(key, new EventData(key, 0, 0)).getLength();
@@ -220,7 +250,7 @@ public class LuceneFileStore {
 
         //Atomic Operation
         synchronizer.setValueAsObject(rootPath, commitPoint);
-
+        log.warn("Commit with eventsMap for shard {}, segment {}: " + printEventsMap(eventsMap), shardId, dest);
 
         pendingCommitPoint.remove(source);
 

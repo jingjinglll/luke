@@ -17,8 +17,10 @@
 
 package org.apache.lucene.luke.models.commits;
 
+import com.dell.pravegasearch.PravegaDirectory;
 import java.io.IOException;
 import org.apache.lucene.luke.app.DirectoryHandler;
+import org.apache.lucene.luke.app.IndexHandler;
 
 /**
  * Holder for a index file.
@@ -30,14 +32,26 @@ public final class File {
   static File of(String indexPath, String name) {
     File file = new File();
     file.fileName = name;
-    java.io.File fileObject = new java.io.File(indexPath, name);
-    if(DirectoryHandler.getInstance().getState().getDirImpl().endsWith("PravegaDirectory")) {
-      try {
-        file.displaySize = CommitsImpl.toDisplaySize(DirectoryHandler.getInstance().getState().getDirectory().fileLength(name));
-      } catch (IOException e) {
-        file.displaySize = CommitsImpl.toDisplaySize(0);
+    boolean isPravegaDirectory = false;
+    long length = 0;
+    try {
+      isPravegaDirectory = IndexHandler.getInstance().getState().getDirImpl().endsWith("PravegaDirectory");
+      length = IndexHandler.getInstance().getState().getDirectory().fileLength(name);
+    } catch (Exception e) {
+
+    }
+    try {
+      if(!isPravegaDirectory) {
+        isPravegaDirectory = DirectoryHandler.getInstance().getState().getDirImpl().endsWith("PravegaDirectory");
+        length = DirectoryHandler.getInstance().getState().getDirectory().fileLength(name);
       }
+    } catch (Exception e) {
+
+    }
+    if(isPravegaDirectory) {
+      file.displaySize = CommitsImpl.toDisplaySize(length);
     } else {
+      java.io.File fileObject = new java.io.File(indexPath, name);
       file.displaySize = CommitsImpl.toDisplaySize(fileObject.length());
     }
     return file;

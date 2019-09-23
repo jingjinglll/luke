@@ -21,4 +21,8 @@ public class EventData implements Serializable {
     public int getLength() {
         return this.length;
     }
+
+    public String getEventName() {
+        return eventName;
+    }
 }

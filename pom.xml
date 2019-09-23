@@ -78,6 +78,15 @@
                 <enabled>true</enabled>
             </releases>
         </repository>
+        <repository>
+            <id>nautilus-prerelease</id>
+            <name>nautilus-prerelease</name>
+            <url>http://asdrepo.isus.emc.com:8081/artifactory/nautilus-prerelease-local</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -221,13 +230,13 @@
         <dependency>
             <groupId>io.pravega</groupId>
             <artifactId>pravega-client</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.1</version>
         </dependency>
 
         <dependency>
             <groupId>io.pravega</groupId>
             <artifactId>pravega-common</artifactId>
-            <version>0.4.0</version>
+            <version>0.5.1</version>
         </dependency>
 
         <dependency>
@@ -246,6 +255,12 @@
             <groupId>org.cfg4j</groupId>
             <artifactId>cfg4j-core</artifactId>
             <version>4.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-native-epoll</artifactId>
+            <version>4.1.30.Final</version>
         </dependency>
 
     </dependencies>
@@ -441,6 +456,13 @@
             </plugin>
 
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.5.0.Final</version>
+            </extension>
+        </extensions>
     </build>
 
 </project>

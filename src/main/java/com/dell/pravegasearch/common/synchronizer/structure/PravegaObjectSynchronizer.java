@@ -18,6 +18,9 @@
 package com.dell.pravegasearch.common.synchronizer.structure;
 
 
+import com.dell.pravegasearch.PravegaStoreFactory;
+import com.dell.pravegasearch.common.synchronizer.ObjectSetSynchronizer;
+import com.dell.pravegasearch.common.synchronizer.PravegaSynchronizer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,9 +29,6 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import com.dell.pravegasearch.common.synchronizer.ObjectSetSynchronizer;
-import com.dell.pravegasearch.PravegaStoreFactory;
-import com.dell.pravegasearch.common.synchronizer.PravegaSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,9 +60,7 @@ public class PravegaObjectSynchronizer extends PravegaSynchronizer
         try {
             pravegaStore.refresh();
             if (pravegaStore.containsKey(path)) {
-
                 byte[] value = pravegaStore.get(path);
-
                 return value;
             }
         } catch (Exception e) {
@@ -76,9 +74,7 @@ public class PravegaObjectSynchronizer extends PravegaSynchronizer
     public void setValueAsBytes(String key, byte[] value) {
         String path = rootPath + "/" + key;
         try {
-
             pravegaStore.put(path, value);
-
         } catch (Exception e) {
             log.error("Failed to set {} into State Synchronizer", key, e);
             throw e;
